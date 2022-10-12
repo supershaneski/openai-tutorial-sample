@@ -17,6 +17,10 @@
 
 # misc
 .DS_Store
+/_bin
+*.bu.css
+*.bu.jsx
+*.bu.js
 
 # debug
 npm-debug.log*

@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styles from "./index.module.css"
 import Logo from "./components/logo"
 import { capitalizeString } from './lib/utils'
@@ -10,7 +10,30 @@ export default function Home() {
   const [dishName, setDishName] = useState("")
   const [ingredients, setIngredients] = useState([])
   const [loading, setLoading] = useState(false)
+  const [timerState, setTimerState] = useState(0)
+  const [timerValue, setTimerValue] = useState(0)
   
+  useEffect(() => {
+
+    let tim
+
+    if(timerState === 1) {
+      tim = setInterval(() => {
+        setTimerValue(v => v - 1)
+      }, 1000)
+    }
+
+    if(timerValue === 0) {
+      setTimerState(0)
+      clearInterval(tim)
+    }
+
+    return () => {
+      clearInterval(tim)
+    }
+
+  }, [timerState, timerValue])
+
   const onSubmit = (event) => {
     
     event.preventDefault()
@@ -39,12 +62,12 @@ export default function Home() {
 
     const items = data.result.split("\n").filter(item => item.length > 0)
 
-    console.log(items)
-
     setDishInput("")
     setIngredients(items)
     setLoading(false)
-    
+
+    setTimerValue(60)
+    setTimerState(1)
 
   }
 
@@ -73,7 +96,10 @@ export default function Home() {
             <input 
             disabled={loading}
             type="submit" 
-            value="Generate Grocery List"
+            value={timerState === 1 ? `Please wait ${timerValue}` : "Generate Ingredients"}
+            style={{
+              backgroundColor: (loading || timerState === 1) ? '#e6e6e6' : '#06c4f9'
+            }}
             />
           </div>
         </form>

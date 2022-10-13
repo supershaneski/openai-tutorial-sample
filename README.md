@@ -21,7 +21,7 @@ So, I decided, for now, to just list the ingredients for one dish.
 
 * Validate input to format it properly and check for unwanted words before sending.
   
-* Set an interval before the user can send another request.
+* ~~Set an interval before the user can send another request.~~ ***Added 2022-10-13***
   
 * Save result to `localStorage` as a simple cache mechanism.
 

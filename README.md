@@ -17,6 +17,14 @@ I will need to process the output to remove similar items and other unnecessary 
 However, upon further testing, I cannot get my expected output from the endpoint from my lack of experience in writing good prompts. 
 So, I decided, for now, to just list the ingredients for one dish.
 
+# Todo
+
+* Validate input to format it properly and check for unwanted words before sending.
+  
+* Set an interval before the user can send another request.
+  
+* Save result to `localStorage` as a simple cache mechanism.
+
 # Setup
 
 Clone the repository, install the dependencies and run

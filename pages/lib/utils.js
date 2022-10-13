@@ -1,3 +1,5 @@
+const DEF_PREFIX = "openai"
+
 export function capitalizeString(str) {
     return str.split(" ").map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
 }
@@ -21,4 +23,24 @@ export function removeNumberBullet(str) {
     }
 
     return validate(str, 0, 1)
+}
+
+export function saveLocalStorage(key, data, prefix = DEF_PREFIX) {
+
+    const saveData = JSON.stringify(data)
+    
+    localStorage.setItem(`${prefix}-${key}`, saveData)
+
+}
+
+export function loadLocalStorage(key, prefix = DEF_PREFIX) {
+
+    return localStorage.getItem(`${prefix}-${key}`)
+
+}
+
+export function clearLocalStorage(key, prefix = DEF_PREFIX) {
+
+    localStorage.removeItem(`${prefix}-${key}`)
+
 }

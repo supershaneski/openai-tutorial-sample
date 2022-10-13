@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useState, useEffect } from "react"
 import styles from "./index.module.css"
 import Logo from "./components/logo"
-import { capitalizeString, removeNumberBullet } from './lib/utils'
+import { capitalizeString, removeNumberBullet, saveLocalStorage, loadLocalStorage } from './lib/utils'
 
 export default function Home() {
 
@@ -38,6 +38,25 @@ export default function Home() {
     
     event.preventDefault()
 
+    let rawData = loadLocalStorage('saved-dish')
+    if(rawData) {
+
+      let list = JSON.parse(rawData)
+      list = Array.isArray(list) ? list : []
+
+      let selItem = list.find(item => item.name === dishInput.toLowerCase())
+      if(selItem) {
+
+        setDishName(capitalizeString(dishInput))
+        setIngredients(selItem.items)
+        setDishInput("")
+        setLoading(false)
+        return
+
+      }
+      
+    }
+
     setLoading(true)
     setIngredients([])
     setDishName(capitalizeString(dishInput))
@@ -48,19 +67,37 @@ export default function Home() {
 
   const sendRequest = async () => {
 
+    const dish = capitalizeString(dishInput)
+
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ dish: capitalizeString(dishInput) }),
+      body: JSON.stringify({ dish: dish }),
     })
 
     const data = await response.json()
 
     let items = data.result.split("\n").filter(item => item.length > 0).map(item => removeNumberBullet(item))
 
-    items = items.length === 1 ? items.split(",").map(item => item.trim()) : items
+    items = items.length === 1 ? items[0].split(",").map(item => item.trim()) : items
+
+    let list = []
+    let rawData = loadLocalStorage('saved-dish')
+    if(rawData) {
+
+      list = JSON.parse(rawData)
+      list = Array.isArray(list) ? list : []
+      
+    }
+
+    list.push({
+      name: dish.toLowerCase(),
+      items: items,
+    })
+
+    saveLocalStorage('saved-dish', list)
 
     setDishInput("")
     setIngredients(items)

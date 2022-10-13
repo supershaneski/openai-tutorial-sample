@@ -21,9 +21,15 @@ So, I decided, for now, to just list the ingredients for one dish.
 
 * ~~Validate input to format it properly and check for unwanted words before sending.~~ ***Added 2022-10-13***
   
+  I added `validString` function to check the input from an array of banned words.
+  You need to update the `bannedWords` array with more entries.
+  
 * ~~Set an interval before the user can send another request.~~ ***Added 2022-10-13***
   
+  After every request to the remote API, I disable the button until 60 seconds to prevent too many requests.
+  
 * ~~Save result to `localStorage` as a simple cache mechanism.~~ ***Added 2022-10-13***
+  
 
 # Setup
 

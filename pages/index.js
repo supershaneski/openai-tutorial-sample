@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useState, useEffect } from "react"
 import styles from "./index.module.css"
 import Logo from "./components/logo"
-import { capitalizeString, removeNumberBullet, saveLocalStorage, loadLocalStorage } from './lib/utils'
+import { validString, capitalizeString, removeNumberBullet, saveLocalStorage, loadLocalStorage } from './lib/utils'
 
 export default function Home() {
 
@@ -37,6 +37,10 @@ export default function Home() {
   const onSubmit = (event) => {
     
     event.preventDefault()
+
+    if(!validString(dishInput)) {
+      return
+    }
 
     let rawData = loadLocalStorage('saved-dish')
     if(rawData) {
@@ -131,11 +135,11 @@ export default function Home() {
           />
           <div className={styles.button}>
             <input 
-            disabled={loading}
+            disabled={loading || timerState === 1 || dishInput.length < 3}
             type="submit" 
             value={timerState === 1 ? `Please wait ${timerValue}` : "Generate Ingredients"}
             style={{
-              backgroundColor: (loading || timerState === 1) ? '#e6e6e6' : '#06c4f9'
+              backgroundColor: (loading || timerState === 1 || dishInput.length < 3) ? '#e6e6e6' : '#06c4f9'
             }}
             />
           </div>

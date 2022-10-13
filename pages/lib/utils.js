@@ -1,5 +1,10 @@
 const DEF_PREFIX = "openai"
 
+export function validString(str) {
+    const bannedWords = ["aaa", "xxx", "sss"] // edit this
+    return !bannedWords.some(item => str.toLowerCase().indexOf(item) >= 0)
+}
+
 export function capitalizeString(str) {
     return str.split(" ").map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
 }

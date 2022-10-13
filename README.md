@@ -19,11 +19,11 @@ So, I decided, for now, to just list the ingredients for one dish.
 
 # Todo
 
-* Validate input to format it properly and check for unwanted words before sending.
+* ~~Validate input to format it properly and check for unwanted words before sending.~~ ***Added 2022-10-13***
   
 * ~~Set an interval before the user can send another request.~~ ***Added 2022-10-13***
   
-* Save result to `localStorage` as a simple cache mechanism.
+* ~~Save result to `localStorage` as a simple cache mechanism.~~ ***Added 2022-10-13***
 
 # Setup
 

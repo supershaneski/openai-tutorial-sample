@@ -2,7 +2,7 @@ import Head from "next/head"
 import { useState, useEffect } from "react"
 import styles from "./index.module.css"
 import Logo from "./components/logo"
-import { capitalizeString } from './lib/utils'
+import { capitalizeString, removeNumberBullet } from './lib/utils'
 
 export default function Home() {
 
@@ -38,11 +38,9 @@ export default function Home() {
     
     event.preventDefault()
 
-    const dish = capitalizeString(dishInput)
-
     setLoading(true)
     setIngredients([])
-    setDishName(dish)
+    setDishName(capitalizeString(dishInput))
 
     sendRequest()
     
@@ -55,12 +53,14 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ dish: dishName }),
+      body: JSON.stringify({ dish: capitalizeString(dishInput) }),
     })
 
     const data = await response.json()
 
-    const items = data.result.split("\n").filter(item => item.length > 0)
+    let items = data.result.split("\n").filter(item => item.length > 0).map(item => removeNumberBullet(item))
+
+    items = items.length === 1 ? items.split(",").map(item => item.trim()) : items
 
     setDishInput("")
     setIngredients(items)

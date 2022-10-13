@@ -5,15 +5,17 @@ This project is based from the OpenAI API [quickstart tutorial](https://beta.ope
 
 It uses the [Next.js](https://nextjs.org/) framework with [React](https://reactjs.org/).
 
-Instead of `pet name generator`, I modified it to create `grocery shopping list` based on the menu of dishes.
+Instead of `pet name generator`, I modified it to generate ingredients based on a dish.
 
 # Motivation
 
-Please note that this is still a work in progress...
+***Please note that this is still a work in progress...***
 
-Basically, my idea is for the user to list their weekly menu.
-Then using OpenAI API `completion` endpoint, generate a grocery shopping list.
-I will need to process the output to remove similar items and other unnecessary details like amount, etc.
+My original idea when I started this exercise is to list a menu for the week then based on the dishes on the menu, using OpenAI API `completion` endpoint, generate a grocery shopping list.
+I will need to process the output to remove similar items and other unnecessary details (e.g. chopped, sliced), etc.
+
+However, upon further testing, I cannot get my expected output from the endpoint from my lack of experience in writing good prompts. 
+So, I decided, for now, to just list the ingredients for one dish.
 
 # Setup
 

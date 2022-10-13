@@ -1,183 +1,104 @@
-import Head from "next/head";
-import { useState } from "react";
-import styles from "./index.module.css";
-//import Logo from "./components/logo";
-import { capitalizeString, validateString } from './lib/utils'
-import Header from "./components/header";
-
-/*
-const Header = () => {
-  return (
-    <>
-      <div>
-        <Logo color="white" size={40} />
-      </div>
-      <style jsx>{`
-      div {
-        position: relative;
-        background-color: #48CFAD;
-        padding: 12px;
-        border-radius: 50%;
-      }
-      `}</style>
-    </>
-    
-  )
-}
-*/
+import Head from "next/head"
+import { useState } from "react"
+import styles from "./index.module.css"
+import Logo from "./components/logo"
+import { capitalizeString } from './lib/utils'
 
 export default function Home() {
 
-  const [animalInput, setAnimalInput] = useState("");
-  const [result, setResult] = useState()
-
-  const [menuList, setMenuList] = useState([])
-  const [groceryList, setGroceryList] = useState([])
-  const [menuInput, setMenuInput] = useState("")
+  const [dishInput, setDishInput] = useState("")
+  const [dishName, setDishName] = useState("")
+  const [ingredients, setIngredients] = useState([])
   const [loading, setLoading] = useState(false)
-
-  async function onSubmit(event) {
+  
+  const onSubmit = (event) => {
     
-    event.preventDefault();
+    event.preventDefault()
+
+    const dish = capitalizeString(dishInput)
 
     setLoading(true)
+    setIngredients([])
+    setDishName(dish)
+
+    sendRequest()
     
+  }
+
+  const sendRequest = async () => {
+
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ menu: menuList }),
-    });
+      body: JSON.stringify({ dish: dishName }),
+    })
 
-    const data = await response.json();
-    //setResult(data.result);
-    //setAnimalInput("");
+    const data = await response.json()
 
-    const recipeKey = menuList[0].toLowerCase()
+    const items = data.result.split("\n").filter(item => item.length > 0)
 
-    const tokens = data.result.split('\n')
+    console.log(items)
 
-    //let list = []
-    //let state = 0
-
-    /*for(let i = 0; i < tokens.length; i++) {
-      const str = tokens[i].toLowerCase()
-      if(str.indexOf(':') > 0) {
-        if(str.indexOf(recipeKey) >= 0) {
-          state = 1
-        } else {
-          if(state === 1) {
-            break
-          }
-        }
-      } else {
-        if(state == 1) {
-          if(str.length > 0) {
-            let s = str
-            s = s.indexOf("-") === 0 ? s.slice(1) : s // remove -
-            list.push(capitalizeString(s))
-          }
-        }
-      }
-    }*/
-
-    let list = tokens.filter(str => str.length > 0)
-
-    setGroceryList(list)
+    setDishInput("")
+    setIngredients(items)
     setLoading(false)
-
-  }
-
-  const addMenuToList = () => {
-
-    // check for banned words
-    if(!validateString(menuInput)) {
-      return
-    }
-
-    // check if already added
-    if(menuList.some(menu => menu.toLowerCase().indexOf(menuInput.toLowerCase()) >= 0 || menuInput.toLowerCase().indexOf(menu.toLowerCase()) >= 0)) {
-      return
-    }
-
-    const menuName = capitalizeString(menuInput)
     
-    const list = menuList.slice(0)
-    list.push(menuName)
-
-    setMenuList(list)
-
-    setMenuInput("")
 
   }
 
-  const isAddButtonDisabled = menuInput.length < 3 || menuList.length === 1
-  const isGenerateButtonDisabled = menuList.length === 0 || groceryList.length > 0
-  
   return (
     <div>
       <Head>
-        <title>OpenAI Quickstart | My Shopping List</title>
+        <title>OpenAI Quickstart | My Grocery List</title>
         <link rel="icon" href="/dog.png" />
       </Head>
       <main className={styles.main}>
-        <Header />
-        <h3>Grocery List Generator</h3>
-        <div className={styles.inputPanel}>
+        <div className={styles.header}>
+          <Logo />
+          <h3>My Grocery List</h3>
+        </div>
+        <form onSubmit={onSubmit}>
           <input
+            disabled={loading}
             type="text"
-            name="menu"
-            placeholder="Enter name of a dish"
-            maxLength={20}
-            value={menuInput}
-            onChange={(e) => setMenuInput(e.target.value)}
+            name="dish"
+            placeholder="Enter a dish"
+            maxLength={24}
+            value={dishInput}
+            onChange={(e) => setDishInput(e.target.value)}
           />
-          <input 
-          disabled={isAddButtonDisabled ? true : false} 
-          style={{backgroundColor: isAddButtonDisabled ? '#e6e6e6' : '#10a37f'}}
-          onClick={addMenuToList} type="button" value="Add" />
-        </div>
-        <div className={styles.list}>
-          <h4>Weekly Menu</h4>
-          <ul>
-          {
-            menuList.map((item, index) => {
-              return (
-                <li key={index}>{item}</li>
-              )
-            })
-          }
-          </ul>
-        </div>
-        <div className={styles.action}>
-          <button 
-          onClick={onSubmit}
-          className={styles.button}
-          disabled={isGenerateButtonDisabled ? true : false} 
-          style={{backgroundColor: isGenerateButtonDisabled ? '#e6e6e6' : '#10a37f'}}
-          >Generate Grocery List</button>
-        </div>
-        <div className={styles.list}>
-          <h4>Grocery List</h4>
-          {
-            loading &&
-            <p>Loading...</p>
-          }
-          {
-            !loading &&
+          <div className={styles.button}>
+            <input 
+            disabled={loading}
+            type="submit" 
+            value="Generate Grocery List"
+            />
+          </div>
+        </form>
+        {
+          loading &&
+          <div className={styles.loader}>
+            <span>Loading...</span>
+          </div>
+        }
+        {
+          (!loading && ingredients.length > 0) &&
+          <div className={styles.result}>
+            <h4>Ingredients for {dishName}</h4>
             <ul>
             {
-              groceryList.map((item, index) => {
+              ingredients.map((item, index) => {
                 return (
                   <li key={index}>{item}</li>
                 )
               })
             }
             </ul>
-          }
-        </div>
+          </div>
+        }
       </main>
     </div>
-  );
+  )
 }
